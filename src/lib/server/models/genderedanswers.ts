@@ -6,31 +6,39 @@ import type {
 	ForeignKey,
 } from "sequelize";
 import { db } from "../database";
+import type { Question } from "./question";
+import type { AnswerPossibility } from "./answerpossibility";
 import type { User } from "./user";
 
-export class Quote extends Model<InferAttributes<Quote>, InferCreationAttributes<Quote>> {
+export class GenderedAnswers extends Model<
+	InferAttributes<GenderedAnswers>,
+	InferCreationAttributes<GenderedAnswers>
+> {
 	declare id: CreationOptional<number>;
-	declare course: string;
-	declare allowed: boolean;
 	declare userId: ForeignKey<User["id"]>;
+	declare questionId: ForeignKey<Question["id"]>;
+	declare answerMaleId: ForeignKey<User["id"]>;
+	declare answerFemaleId: ForeignKey<User["id"]>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 }
 
-Quote.init(
+GenderedAnswers.init(
 	{
 		id: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		course: DataTypes.TEXT,
-		allowed: DataTypes.BOOLEAN,
+		userId: DataTypes.INTEGER,
+		questionId: DataTypes.INTEGER,
+		answerMaleId: DataTypes.INTEGER,
+		answerFemaleId: DataTypes.INTEGER,
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,
 	},
 	{
 		sequelize: db,
-		tableName: "quotes",
+		tableName: "genderedanswers",
 	},
 );

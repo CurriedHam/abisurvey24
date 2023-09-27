@@ -6,6 +6,7 @@ import { PairAnswer } from "$lib/server/models/pairanswer";
 interface inQuestion {
 	question: string;
 	teacherQuestion: boolean;
+	genderedQuestion?: boolean;
 	id?: number;
 	pair: boolean;
 }
@@ -14,7 +15,7 @@ export const load: PageServerLoad = async () => {
 	return {
 		questions: (
 			await Question.findAll({
-				attributes: ["id", "question", "teacherQuestion", "pair"],
+				attributes: ["id", "question", "teacherQuestion", "genderedQuestion", "pair"],
 			})
 		).map((question) => {
 			return question.dataValues;
@@ -41,6 +42,7 @@ export const actions: Actions = {
 		let current: inQuestion = {
 			question: "",
 			teacherQuestion: false,
+			
 			pair: false,
 		};
 
@@ -56,6 +58,7 @@ export const actions: Actions = {
 				current = {
 					question: "",
 					teacherQuestion: false,
+					
 					pair: false,
 				};
 
@@ -64,6 +67,8 @@ export const actions: Actions = {
 				current.teacherQuestion = true;
 			} else if (key === "id") {
 				current.id = parseInt(value.toString());
+			} else if (key === "genderedQuestion") {
+				current.genderedQuestion = true;
 			} else if (key === "pair") {
 				current.pair = true;
 			}

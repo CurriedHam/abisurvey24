@@ -10,6 +10,7 @@
 	interface Possibility {
 		forename: string;
 		surname: string;
+		gender: string;
 		id: number;
 		isTeacher: boolean;
 		personId: number;
@@ -26,10 +27,17 @@
 		answerTwoId?: number;
 	}
 
+	interface GenderedAnswer {
+		id?: number;
+		answerMaleId?: number;
+		answerFemaleId?: number;
+	}
+
 	interface Question {
 		id: number;
 		question: string;
 		teacherQuestion: boolean;
+		genderedQuestion: boolean;
 		pair: boolean;
 	}
 
@@ -65,7 +73,27 @@
 		return res;
 	};
 
-	$: answered_num = Object.keys(answers).length + calc_answered_pairs(pairanswers);
+	const calc_answered_gendered = (obj: Record<string, GenderedAnswer>) => {
+		const keys = Object.keys(obj);
+
+		let res = 0.0;
+
+		keys.forEach((k) => {
+			const keys = Object.keys(obj[k]);
+
+			let key_length = keys.length;
+
+			if (keys.includes("id")) {
+				key_length -= 1;
+			}
+
+			res += key_length / 2;
+		});
+
+		return res;
+	};
+
+	$: answered_num = Object.keys(answers).length + calc_answered_pairs(pairanswers) + calc_answered_gendered(genderedanswers);
 
 	let teacherPossibilities: Array<Possibility> = [];
 	let studentPossibilities: Array<Possibility> = [];
@@ -76,6 +104,7 @@
 	// objects with answers; question ids as keys
 	let answers: Record<string, Answer> = {};
 	let pairanswers: Record<string, PairAnswer> = {};
+	let genderedanswers: Record<string, GenderedAnswer> = {};
 
 	onMount(() => {
 		// preprocess the data provided by the backend
@@ -112,6 +141,14 @@
 			};
 		});
 
+		data.genderedanswers.forEach((answer: { questionId: number; id: number; answerMaleId: number; answerFemaleId: number; }) => {
+			genderedanswers[answer.questionId] = {
+				id: answer.id,
+				answerMaleId: answer.answerMaleId,
+				answerFemaleId: answer.answerFemaleId,
+			};
+		});
+
 		// refresh state
 		studentQuestions = [...studentQuestions];
 		teacherQuestions = [...teacherQuestions];
@@ -119,37 +156,65 @@
 
 	let searchResults: Array<Possibility> = [];
 
-	function search(term: string, teacher: boolean, questionId: number) {
-		edited.set(true);
+	function search(term: string, teacher: boolean, questionId: number, gender: string) {
 
-		// Calculates the order of the possibilities using the levenshtein distance
-		let searchables: Array<Possibility>;
+		if(gender == "n"){
+			edited.set(true);
 
-		if (teacher) {
-			searchables = [...teacherPossibilities];
-		} else {
-			searchables = [...studentPossibilities];
-		}
+			// Calculates the order of the possibilities using the levenshtein distance
+			let searchables: Array<Possibility>;
 
-		let given_answers = pairanswers[questionId];
+			if (teacher) {
+				searchables = [...teacherPossibilities];
+			} else {
+				searchables = [...studentPossibilities];
+			}
 
-		if (given_answers) {
-			["answerOneId", "answerTwoId"].forEach((part) => {
-				const answer = given_answers[part];
+			let given_answers = pairanswers[questionId];
 
-				if (answer) {
-					const index = searchables
-						.map((s) => {
-							return s.id;
-						})
-						.indexOf(answer);
+			if (given_answers) {
+				["answerOneId", "answerTwoId"].forEach((part) => {
+					const answer = given_answers[part];
 
-					searchables.splice(index, 1);
+					if (answer) {
+						const index = searchables
+							.map((s) => {
+								return s.id;
+							})
+							.indexOf(answer);
+
+						searchables.splice(index, 1);
+					}
+				});
+			}
+
+			searchResults = order_possiblities(term, searchables).slice(0, 4);
+		}else{
+			edited.set(true);
+
+			// Calculates the order of the possibilities using the levenshtein distance
+			let searchables: Array<Possibility>;
+
+			if (teacher) {
+				searchables = [...teacherPossibilities];
+			} else {
+				searchables = [...studentPossibilities];
+			}
+
+			let given_answers = genderedanswers[questionId];
+			let right_gender: Array<Possibility> = [];
+
+			searchables.forEach((pos) => {
+
+				if (pos.gender == gender) {
+
+					right_gender.push(pos)
 				}
 			});
-		}
 
-		searchResults = order_possiblities(term, searchables).slice(0, 4);
+			searchResults = order_possiblities(term, right_gender).slice(0, 4);
+		}
+		
 	}
 
 	function getAnswerForId(obj: Record<string, Answer>, id: number): string {
@@ -168,6 +233,22 @@
 				res = possibilities[obj[id].answerOneId];
 			} else {
 				res = possibilities[obj[id].answerTwoId];
+			}
+
+			return res !== undefined ? res : "";
+		}
+
+		return "";
+	}
+
+	function getGenderedAnswerForId(obj: Record<string, GenderedAnswer>, id: number, part: 1 | 2): string {
+		if (id.toString() in obj) {
+			let res;
+
+			if (part === 1) {
+				res = possibilities[obj[id].answerMaleId];
+			} else {
+				res = possibilities[obj[id].answerFemaleId];
 			}
 
 			return res !== undefined ? res : "";
@@ -211,17 +292,18 @@
 					<div>
 						<input
 							on:input|preventDefault={(event) =>
-								search(event.target.value, question.teacherQuestion, question.id)}
+								search(event.target.value, question.teacherQuestion, question.id, question.genderedQuestion ? "m":"n")}
 							on:focusin={(event) => {
 								current = question.id;
 
 								pair_part = 1;
 
-								search(event.target.value, question.teacherQuestion, question.id);
+								search(event.target.value, question.teacherQuestion, question.id, question.genderedQuestion ? "m":"n");
 							}}
 							on:focusout={(event) => {
 								event.target.value = !question.pair
-									? getAnswerForId(answers, question.id)
+									? !question.genderedQuestion ? getAnswerForId(answers, question.id)
+									: getGenderedAnswerForId(genderedanswers, question.id, 1)
 									: getPairAnswerForId(pairanswers, question.id, 1);
 
 								current = null;
@@ -230,19 +312,20 @@
 							class="m-5 w-72 rounded-lg border-solid p-2"
 							placeholder="Deine Antwort.."
 							value={!question.pair
-								? getAnswerForId(answers, question.id)
+								? !question.genderedQuestion ? getAnswerForId(answers, question.id)
+								: getGenderedAnswerForId(genderedanswers, question.id, 1)
 								: getPairAnswerForId(pairanswers, question.id, 1)}
 						/>
 						{#if question.pair}
 							<input
 								on:input|preventDefault={(event) =>
-									search(event.target.value, question.teacherQuestion, question.id)}
+									search(event.target.value, question.teacherQuestion, question.id, "n")}
 								on:focusin={(event) => {
 									current = question.id;
 
 									pair_part = 2;
 
-									search(event.target.value, question.teacherQuestion, question.id);
+									search(event.target.value, question.teacherQuestion, question.id, "n");
 								}}
 								on:focusout={(event) => {
 									event.target.value = getPairAnswerForId(pairanswers, question.id, 2);
@@ -252,6 +335,27 @@
 								class="m-5 mt-0 w-72 rounded-lg border-solid p-2"
 								placeholder="Deine Antwort.."
 								value={getPairAnswerForId(pairanswers, question.id, 2)}
+							/>
+						{/if}
+						{#if question.genderedQuestion}
+							<input
+								on:input|preventDefault={(event) =>
+									search(event.target.value, question.teacherQuestion, question.id, "w")}
+								on:focusin={(event) => {
+									current = question.id;
+
+									pair_part = 2;
+
+									search(event.target.value, question.teacherQuestion, question.id, "w");
+								}}
+								on:focusout={(event) => {
+									event.target.value = getGenderedAnswerForId(genderedanswers, question.id, 2);
+									current = null;
+								}}
+								type="text"
+								class="m-5 mt-0 w-72 rounded-lg border-solid p-2"
+								placeholder="Deine Antwort.."
+								value={getGenderedAnswerForId(genderedanswers, question.id, 2)}
 							/>
 						{/if}
 						{#if current === question.id}
@@ -266,7 +370,7 @@
 											event.preventDefault();
 										}}
 										on:mousedown={() => {
-											if (!question.pair) {
+											if (!question.pair && !question.genderedQuestion) {
 												if (question.id.toString() in answers) {
 													answers[question.id].answerPossibilityId = possibility.id;
 												} else {
@@ -274,13 +378,22 @@
 														answerPossibilityId: possibility.id,
 													};
 												}
-											} else {
+											} else if(!question.genderedQuestion){
 												let part = pair_part === 1 ? "answerOneId" : "answerTwoId";
 												if (!(question.id.toString() in pairanswers)) {
 													pairanswers[question.id] = {};
 												}
 
 												pairanswers[question.id][part] = possibility.id;
+											} else {
+
+												let part = pair_part === 1 ? "answerMaleId" : "answerFemaleId";
+												if (!(question.id.toString() in genderedanswers)) {
+													genderedanswers[question.id] = {};
+												}
+
+												genderedanswers[question.id][part] = possibility.id;
+
 											}
 										}}
 									>
@@ -317,6 +430,24 @@
 								hidden
 								name="answerTwoId"
 								value={pairanswers[question.id.toString()].answerTwoId}
+							/>
+						{/if}
+					{:else if question.id.toString() in genderedanswers}
+						{#if "id" in genderedanswers[question.id.toString()]}
+							<input hidden name="answerId" value={genderedanswers[question.id.toString()].id} />
+						{/if}
+						{#if "answerMaleId" in genderedanswers[question.id.toString()]}
+							<input
+								hidden
+								name="answerMaleId"
+								value={genderedanswers[question.id.toString()].answerMaleId}
+							/>
+						{/if}
+						{#if "answerMaleId" in genderedanswers[question.id.toString()]}
+							<input
+								hidden
+								name="answerFemaleId"
+								value={genderedanswers[question.id.toString()].answerFemaleId}
 							/>
 						{/if}
 					{/if}

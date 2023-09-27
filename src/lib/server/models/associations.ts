@@ -1,6 +1,7 @@
 import { AnswerPossibility } from "./answerpossibility";
 import { Answer } from "./answer";
 import { PairAnswer } from "./pairanswer";
+import { GenderedAnswers } from "./genderedanswers";
 import { Question } from "./question";
 import { Person } from "./person";
 import { User } from "./user";
@@ -31,17 +32,26 @@ Answer.belongsTo(Question, { foreignKey: "questionId" });
 Question.hasOne(PairAnswer, { foreignKey: "questionId" });
 PairAnswer.belongsTo(Question, { foreignKey: "questionId" });
 
+Question.hasOne(GenderedAnswers, { foreignKey: "questionId" });
+GenderedAnswers.belongsTo(Question, { foreignKey: "questionId" });
+
 User.hasOne(Answer, { foreignKey: "userId" });
 Answer.belongsTo(User, { foreignKey: "userId" });
 
 User.hasOne(PairAnswer, { foreignKey: "userId" });
 PairAnswer.belongsTo(User, { foreignKey: "userId" });
 
+User.hasOne(GenderedAnswers, { foreignKey: "userId" });
+GenderedAnswers.belongsTo(User, { foreignKey: "userId" });
+
 ProfileField.hasOne(Attribute, { foreignKey: "profileFieldId" });
 Attribute.belongsTo(ProfileField, { foreignKey: "profileFieldId" });
 
 User.hasOne(Attribute, { foreignKey: "userId" });
 Attribute.belongsTo(User, { foreignKey: "userId" });
+
+User.hasOne(Attribute, { foreignKey: "editId" });
+Attribute.belongsTo(User, { foreignKey: "editId" });
 
 User.hasOne(Picture, { foreignKey: "userId" });
 Picture.belongsTo(User, { foreignKey: "userId" });

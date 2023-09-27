@@ -1,15 +1,17 @@
 import type { PageServerLoad } from "./$types";
 import { Answer } from "$lib/server/models/answer";
 import { db } from "$lib/server/database";
-import { AnswerPossibility } from "$lib/server/models/answerpossibility";
+import { User } from "$lib/server/models/user";
 import { Person } from "$lib/server/models/person";
 import { Question } from "$lib/server/models/question";
 import { PairAnswer } from "$lib/server/models/pairanswer";
+import { GenderedAnswers } from "$lib/server/models/genderedanswers";
 
 import { Op } from "sequelize";
 
 interface QueriedPossibility {
 	id: number;
+	gender: string;
 	Person: Person;
 }
 
@@ -17,6 +19,14 @@ interface QueriedAnswer {
 	id: number;
 	questionId: number;
 	answerPossibilityId: number;
+	count: string;
+	Question: Question;
+}
+
+interface QueriedGenderedAnswer {
+	id: number;
+	questionId: number;
+	answerId: number;
 	count: string;
 	Question: Question;
 }
@@ -30,12 +40,13 @@ interface QueriedPairAnswer {
 	Question: Question;
 }
 
+
 export const load: PageServerLoad = async ({ params }) => {
 	// @ts-ignore
 	const possibilities: Array<QueriedPossibility> = (
-		await AnswerPossibility.findAll({
+		await User.findAll({
 			include: Person,
-			attributes: ["id", "Person.forename", "Person.surname"],
+			attributes: ["id", "gender", "Person.forename", "Person.surname"],
 			where: {
 				isTeacher: params.type === "teacher",
 			},
@@ -60,6 +71,64 @@ export const load: PageServerLoad = async ({ params }) => {
 				[db.fn("count", "answerPossibilityId"), "count"],
 			],
 			group: ["questionId", "answerPossibilityId", "Question.id"],
+		})
+	).map((row) => {
+		return row.dataValues;
+	});
+
+	// @ts-ignore
+	const maleanswers: Array<QueriedGenderedAnswer> = (
+		await GenderedAnswers.findAll({
+			include: [
+				{
+					model: Question,
+					attributes: ["teacherQuestion"],
+					where: { teacherQuestion: params.type === "teacher" },
+				},
+			],
+			attributes: [
+				"questionId",
+				["answerMaleId","answerId"],
+				[db.fn("count", "answerMaleId"), "count"],
+			],
+			where: {
+				answerMaleId: {
+					[Op.not]: null,
+				},
+				answerFemaleId: {
+					[Op.not]: null,
+				},
+			},
+			group: ["questionId", "answerMaleId", "Question.id"],
+		})
+	).map((row) => {
+		return row.dataValues;
+	});
+
+	// @ts-ignore
+	const femaleanswers: Array<QueriedGenderedAnswer> = (
+		await GenderedAnswers.findAll({
+			include: [
+				{
+					model: Question,
+					attributes: ["teacherQuestion"],
+					where: { teacherQuestion: params.type === "teacher" },
+				},
+			],
+			attributes: [
+				"questionId",
+				["answerFemaleId","answerId"],
+				[db.fn("count", "answerFemaleId"), "count"],
+			],
+			where: {
+				answerMaleId: {
+					[Op.not]: null,
+				},
+				answerFemaleId: {
+					[Op.not]: null,
+				},
+			},
+			group: ["questionId", "answerFemaleId", "Question.id"],
 		})
 	).map((row) => {
 		return row.dataValues;
@@ -95,6 +164,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		return row.dataValues;
 	});
 
+	
+
 	return {
 		answers: answers.map((answer) => {
 			return {
@@ -111,6 +182,20 @@ export const load: PageServerLoad = async ({ params }) => {
 				count: pairanswer.count,
 			};
 		}),
+		maleanswers: maleanswers.map((genderedanswer) => {
+			return {
+				questionId: genderedanswer.questionId,
+				answerId: genderedanswer.answerId,
+				count: genderedanswer.count,
+			};
+		}),
+		femaleanswers: femaleanswers.map((genderedanswer) => {
+			return {
+				questionId: genderedanswer.questionId,
+				answerId: genderedanswer.answerId,
+				count: genderedanswer.count,
+			};
+		}),
 		questions: (
 			await Question.findAll({
 				attributes: ["id", "question", "teacherQuestion"],
@@ -125,6 +210,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		possibilities: possibilities.map((row) => {
 			return {
 				id: row.id,
+				gender: row.gender,
 				forename: row.Person.forename,
 				surname: row.Person.surname,
 			};

@@ -20,35 +20,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 		attributes: ["value"],
 	});
 
-	const possibilities = (
-		await User.findAll({
-			include: Person,
-			attributes: ["id", "personId", "Person.forename", "Person.surname"],
-			where: {
-				isTeacher: false,
-            },
-		})
-	).map((value) => {
-		return value.dataValues;
-	});
-
 	return {
-		possibilities: possibilities.map((row) => {
-			return {
-				id: row.id,
-				personId: row.personId,
-				isTeacher: false,
-				// @ts-ignore
-				forename: row.Person.forename,
-				// @ts-ignore
-				surname: row.Person.surname,
-			};
-		}),
 		fields: (
 			await ProfileField.findAll({
 				attributes: ["id", "friendQuestion", "field"],
 				order: [["id", "ASC"]],
-				where: {forTeacher: false},
+				where: {forTeacher: true},
 			})
 		).map((field) => {
 			return field.dataValues;

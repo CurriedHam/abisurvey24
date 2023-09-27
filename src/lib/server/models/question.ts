@@ -7,6 +7,7 @@ export class Question extends Model<InferAttributes<Question>, InferCreationAttr
 	declare question: string;
 	declare pair: boolean;
 	declare teacherQuestion: boolean;
+	declare genderedQuestion: boolean;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 }
@@ -21,6 +22,7 @@ Question.init(
 		question: DataTypes.STRING,
 		pair: DataTypes.BOOLEAN,
 		teacherQuestion: DataTypes.BOOLEAN,
+		genderedQuestion: DataTypes.BOOLEAN,
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,
 	},

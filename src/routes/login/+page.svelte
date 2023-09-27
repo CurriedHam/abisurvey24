@@ -1,6 +1,18 @@
+<script lang="ts">
+
+	import { onMount } from "svelte";
+
+	let gender = "";
+	let users = [];
+
+	
+
+	$: show = false;
+</script>
+
 <div class="py-5 text-center dark:text-white ">
 	<h1 class="my-5 text-3xl">Willkommen bei der Abizeitungs-Umfrage</h1>
-	<h3 class="m-2 text-lg">Bitte gib unten den Code ein, den du von unserem Team erhalten hast</h3>
+	<h3 class="m-2 text-lg">Bitte melde dich mit den Code ein, den du von unserem Team erhalten hast</h3>
 	<div class="my-9 grid grid-rows-4">
 		<form method="POST">
 			<div>
@@ -29,8 +41,5 @@
 				/>
 			</div>
 		</form>
-		<div class="my-3 text-slate-900 dark:text-white">
-			Kein Account? <a class="text-sky-500 hover:underline" href="/register">Registrieren</a>
-		</div>
 	</div>
 </div>

@@ -1,37 +1,47 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { afterNavigate } from "$app/navigation";
 
 	interface profileField {
 		id?: number;
+		friendQuestion: boolean;
 		field: string;
 	}
 
 	export let data;
 
+	let type: string;
+
 	let fields: Array<profileField> = [];
 
 	let picture_count = 0;
 
-	onMount(() => {
+	function loadCallback() {
+		type = data.type;
+
 		fields = data.fields.map((field: profileField) => {
 			return {
 				id: field.id,
+				friendQuestion: field.friendQuestion,
 				field: field.field,
 			};
 		});
 
 		picture_count = data.picture_count;
-	});
+	};
 
 	let new_field = "";
+	let new_friend = false;
 
 	$: new_profilefield = {
+		friendQuestion: new_friend,
 		field: new_field,
 	};
 
 	function add_field() {
 		fields.push(new_profilefield);
 		new_field = "";
+		new_friend = false;
 		fields = [...fields];
 	}
 
@@ -40,13 +50,21 @@
 		fields.splice(index, 1);
 		fields = [...fields];
 	}
+
+	onMount(loadCallback);
+	afterNavigate(loadCallback);
 </script>
 
 <div class="m-5">
-	<h1 class="text-5xl dark:text-white">Steckbrief-Manager</h1>
+	<h1 class="text-5xl dark:text-white">Steckbrief-Manager|
+		{#if type === "student"}
+			Schüler
+		{:else}
+			Lehrer
+		{/if}</h1>
 	<h2 class="mt-8 mb-3 text-2xl dark:text-white">Bilderanzahl</h2>
 	<form method="POST" action="?/count">
-		<div class="grid grid-cols-3 grid-rows-1 gap-2 rounded-xl bg-slate-500 p-5 text-white">
+		<div class="grid grid-cols-4 grid-rows-1 gap-2 rounded-xl bg-slate-500 p-5 text-white">
 			<div class="col-span-2">
 				<input
 					bind:value={picture_count}
@@ -56,6 +74,7 @@
 					name="count"
 				/>
 			</div>
+			<div></div>
 			<div class="col-span-1 place-self-center">
 				<input type="submit" value="Speichern" class="rounded-xl bg-white p-3 text-slate-900" />
 			</div>
@@ -64,7 +83,7 @@
 	<h2 class="mt-8 mb-3 text-2xl dark:text-white">Feld hinzufügen</h2>
 	<form on:submit|preventDefault={add_field}>
 		<div
-			class="grid grid-cols-3 grid-rows-2 gap-2 rounded-xl bg-slate-500 p-5 text-white sm:grid-rows-1"
+			class="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl bg-slate-500 p-5 text-white sm:grid-rows-1"
 		>
 			<div class="col-span-3 sm:col-span-2">
 				<input
@@ -72,6 +91,14 @@
 					class="w-full rounded-lg p-3 text-black"
 					type="text"
 					placeholder="Neues Feld.."
+				/>
+			</div>
+			<div class="col-span-3 sm:col-span-1 sm:place-self-center">
+				<label class="mr-2" for="genderedquestion">Freunde-Frage</label><input
+					bind:checked={new_friend}
+					class="scale-150"
+					id="friendquestion"
+					type="checkbox"
 				/>
 			</div>
 			<div class="col-span-3 sm:col-span-1 sm:place-self-center">
@@ -88,7 +115,7 @@
 		{#if fields.length > 0}
 			{#each fields as field, i}
 				<div
-					class="my-2 grid grid-cols-3 grid-rows-2 gap-2 rounded-xl bg-slate-500 p-5 text-white sm:grid-rows-1"
+					class="my-2 grid grid-cols-4 grid-rows-2 gap-2 rounded-xl bg-slate-500 p-5 text-white sm:grid-rows-1"
 				>
 					<div class="col-span-3 sm:col-span-2">
 						<input
@@ -100,6 +127,15 @@
 							type="text"
 							placeholder="Neues Feld"
 							name="field"
+						/>
+					</div>
+					<div class="col-span-3 sm:col-span-1 sm:place-self-center">
+						<label class="mr-2" for="genderedquestion">Freunde-Frage</label><input
+							bind:checked={field.friendQuestion}
+							class="scale-150"
+							name="friendQuestion"
+							id="friendquestion"
+							type="checkbox"
 						/>
 					</div>
 					<div class="col-span-3 sm:col-span-1 sm:place-self-center">

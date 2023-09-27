@@ -8,6 +8,8 @@ export class ProfileField extends Model<
 > {
 	declare id: CreationOptional<number>;
 	declare field: string;
+	declare friendQuestion: boolean;
+	declare forTeacher: boolean;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 }
@@ -20,6 +22,8 @@ ProfileField.init(
 			autoIncrement: true,
 		},
 		field: DataTypes.STRING,
+		friendQuestion: DataTypes.BOOLEAN,
+		forTeacher: DataTypes.BOOLEAN,
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,
 	},

@@ -67,9 +67,8 @@
 	</button>
 	{#if show}
 		<div class="ml-5 flex w-full flex-col sm:flex-row" transition:fade>
-				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/answer/survey"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Umfrage</span></a>
-				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/answer/profiles"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Steckbrief</span></a>
-				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/answer/quotes"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Zitate</span></a>
+				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/teacher/profiles"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Steckbrief</span></a>
+				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/teacher/quotes"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Zitate</span></a>
 			{#if IMAGE_UPLOAD_URL}
 				<div class="mb-4" transition:slide>
 					<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href={IMAGE_UPLOAD_URL}>Bildupload</a>

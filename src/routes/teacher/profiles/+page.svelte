@@ -55,8 +55,6 @@
 
 	let friend_attributes: Array<Friend_Attribute> = [];
 
-	let possibilities: Array<Possibility> = [];
-
 	let images: Record<string, Picture> = {};
 
 	let picture_count = 0;
@@ -68,11 +66,6 @@
 	let deletedPictures: Array<number> = [];
 
 	onMount(() => {
-		data.possibilities.forEach((possibility) => {
-
-			possibilities[possibility.id] = possibility;
-			
-		});
 
 		fields = data.fields;
 		
@@ -119,13 +112,6 @@
 			}
 		}
 		return -1;
-	}
-
-	function getPersonName(id: number) {
-		if (id.toString() in possibilities) {
-			return `${possibilities[id].forename} ${possibilities[id].surname}`;
-		}
-		return "";
 	}
 
 	function getField(id: number) {
@@ -184,21 +170,6 @@
 		return calculated_rows < 5 ? calculated_rows : 5;
 	}
 
-	function search(term: string) {
-
-		edited.set(true);
-
-		let searchables: Array<Possibility> = [];
-
-		possibilities.forEach((possibility) => {
-			if(possibility.id != iD){
-				searchables.push(possibility);
-			}
-		});
-
-		searchResults = order_possiblities(term, searchables).slice(0, 4);
-	}
-
 </script>
 
 <div class="mx-2 lg:mx-8 xs:m-0">
@@ -221,7 +192,6 @@
 						class="mx-5 w-72 rounded-xl border-2 border-solid border-slate-900 bg-white p-2 text-left text-slate-900 md:w-4/12"
 						>{field}</legend
 					>
-					{#if !friendQuestion}
 						<div>
 							<textarea
 								on:input|preventDefault={(event) => {
@@ -242,99 +212,8 @@
 							{/if}
 							<input hidden name="fieldId" value={id} />
 						</div>
-					{:else}
-					
-						<div class="m-6 mx-auto block w-11/12">
-							<input
-							on:input|preventDefault={(event) =>
-								search(event.target.value)}
-							on:focusin={(event) => {
-								current = id;
-
-								search(event.target.value);
-							}}
-							on:focusout={(event) => {
-								event.target.value = getPersonName(getAttributeEditor(id));
-								
-								current = null;
-							}}
-							type="text"
-							class="mx-auto rounded-lg border-solid p-2 text-start"
-							placeholder="Deine Antwort.."
-							value={getPersonName(getAttributeEditor(id))}
-							/>
-							
-							<input hidden name="editor" value={id in attributes ? (attributes[id].editId != null ? attributes[id].editId : -1):-1}/>
-							
-							{#if current === id}
-								<div
-									transition:scale
-									class="absolute z-10 w-fit rounded-t-none border-2 border-solid border-slate-900 bg-white"
-								>
-									{#each searchResults as possibility}
-										<button
-											class="w-full border-b-2 p-1.5 text-left text-lg hover:bg-slate-500"
-											on:click={(event) => {
-												event.preventDefault();
-											}}
-											on:mousedown={() => {
-												if (id.toString() in attributes) {
-													attributes[id].editId = possibility.id;
-												} else {
-													attributes[id] = {
-														answer: "",
-														editId: possibility.id,
-													};
-												}
-											}}
-										>
-											{`${possibility.forename} ${possibility.surname}`}
-										</button>
-										<br />
-									{/each}
-								</div>
-								
-							{/if}
-							
-							{#if id.toString() in attributes && "id" in attributes[id.toString()]}
-								<input hidden name="attributeId" value={attributes[id.toString()].id} />
-							{/if}
-							<input hidden name="fieldId" value={id} />
-						</div>
-					{/if}
 				</fieldset>
 			{/each}
-			{#if friend_attributes.length > 0}
-				<h2 class="my-4 text-3xl dark:text-white">Fragen deiner Freunde:</h2>
-				{#each friend_attributes as attribute}
-					<fieldset
-					class="mt-2 rounded-xl border-4 border-solid border-slate-900 bg-slate-500 dark:bg-sky-700"
-					>
-						<legend
-						class="mx-5 w-72 rounded-xl border-2 border-solid border-slate-900 bg-white p-2 text-left text-slate-900 md:w-4/12"
-						>Frage von {getPersonName(attribute.userId)}: {getField(attribute.profileFieldId)}</legend>
-
-						<div>
-							<textarea
-								on:input|preventDefault={(event) => {
-									let value = event.target.value;
-									attribute.answer = value;
-									event.target.rows = calculate_rows(value);
-								}}
-								class="m-5 mx-auto block w-11/12 rounded-lg border-solid p-2 text-start"
-								placeholder="Deine Antwort.."
-								name="answer"
-								rows={calculate_rows(attribute.answer)}
-								value={attribute.answer}
-								maxlength="500"
-							/>
-
-							<input hidden name="friendAttributeId" value={attribute.id} />
-						</div>
-						
-					</fieldset>
-				{/each}
-			{/if}
 			<div class="mx-auto grid max-w-4xl place-items-center gap-2 p-8 sm:grid-cols-2">
 				{#each [...Array(picture_count).keys()] as i}
 					<div class="relative inline-block w-full">

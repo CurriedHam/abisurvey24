@@ -1,4 +1,4 @@
-import { AnswerPossibility } from "$lib/server/models/answerpossibility";
+import { User } from "$lib/server/models/user";
 import type { PageServerLoad, Actions } from "./$types";
 import { Person } from "$lib/server/models/person";
 import { Quote } from "$lib/server/models/quote";
@@ -19,7 +19,7 @@ interface inQuotePart {
 
 export const load: PageServerLoad = (async ({ locals }) => {
 	const possibilities = (
-		await AnswerPossibility.findAll({
+		await User.findAll({
 			include: Person,
 			attributes: ["id", "isTeacher", "personId", "Person.forename", "Person.surname"],
 		})

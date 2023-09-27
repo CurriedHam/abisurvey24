@@ -6,7 +6,7 @@ import type {
 	ForeignKey,
 } from "sequelize";
 import { db } from "../database";
-import type { AnswerPossibility } from "./answerpossibility";
+import type { User } from "./user";
 import type { Quote } from "./quote";
 
 export class QuotePart extends Model<
@@ -15,7 +15,7 @@ export class QuotePart extends Model<
 > {
 	declare id: CreationOptional<number>;
 	declare content: string;
-	declare answerPossibilityId: ForeignKey<AnswerPossibility["id"]>;
+	declare answerPossibilityId: ForeignKey<User["id"]>;
 	declare quoteId: ForeignKey<Quote["id"]>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;

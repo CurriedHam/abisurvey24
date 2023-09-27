@@ -2,13 +2,15 @@
 	import { isLoggedInAdmin } from "$lib/client/stores/auth";
 	export let data;
 
-	import { fade, slide } from "svelte/transition";
+	import { fade, slide, fly } from "svelte/transition";
 
 	import { afterNavigate } from "$app/navigation";
 
 	$: isLoggedInAdmin.set(data.loggedInAdmin);
 
 	let show_possibility_types = false;
+	let show_profile_types = false;
+	let show_profileresult_types = false;
 	let show_result_types = false;
 
 	let show_dropdown = false;
@@ -42,50 +44,46 @@
 		</button>
 		{#if show_dropdown}
 			<div class="ml-5 flex w-full flex-col sm:flex-row" transition:fade>
-				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/admin" transition:slide
-					>Home</a
-				>
-				<a
-					class="m-1 hover:text-sky-500 hover:underline sm:p-2"
-					href="/admin/questions"
-					transition:slide>Fragen</a
-				>
-				<div
+				<a class="m-1 hover:text-sky-500 hover:underline sm:p-2" href="/admin">
+					<span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>
+						Home
+					</span></a>
+					<div
 					on:click={() => {
 						show_possibility_types = !show_possibility_types;
 					}}
 					on:keydown={() => {
 						[];
 					}}
-					class="relative m-1 inline-block cursor-pointer text-left sm:p-2"
-					transition:slide
-				>
+					class="relative m-1 inline-block cursor-pointer text-center sm:p-2">
 					<div class="flex hover:text-sky-500 hover:underline">
-						<p>Antwortmöglichkeiten</p>
-						<svg
-							class="h-5 w-5"
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-								clip-rule="evenodd"
-							/>
-						</svg>
+						<p><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Users</span></p>
+						<span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>
+							<svg
+								class="h-5 w-5"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
 					</div>
 					{#if show_possibility_types}
 						<div
-							class="absolute right-5 z-10 w-56 origin-top-right rounded-md bg-slate-700"
+							class="absolute right-0 z-0 w-20 origin-top-right rounded-md bg-slate-700"
 							transition:slide
 						>
 							<div class="py-1">
-								<a class="block py-2 hover:bg-slate-500" href="/admin/possibilities/student"
-									>Schüler</a
+								<a class="block py-2 hover:bg-slate-500" href="/admin/users"
+									>  Schüler</a
 								>
-								<a class="block py-2 hover:bg-slate-500" href="/admin/possibilities/teacher"
-									>Lehrer</a
+								<a class="block py-2 hover:bg-slate-500" href="/admin/users_teachers"
+									>  Lehrer</a
 								>
 							</div>
 						</div>
@@ -93,18 +91,52 @@
 				</div>
 				<a
 					class="m-1 hover:text-sky-500 hover:underline sm:p-2"
-					href="/admin/users"
-					transition:slide>Users</a
+					href="/admin/questions"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Fragen</span></a
 				>
+				<div
+					on:click={() => {
+						show_profile_types = !show_profile_types;
+					}}
+					on:keydown={() => {
+						[];
+					}}
+					class="relative m-1 inline-block cursor-pointer text-center sm:p-2">
+					<div class="flex hover:text-sky-500 hover:underline">
+						<p><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Steckbrieffelder</span></p>
+						<span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>
+							<svg
+								class="h-5 w-5"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
+					</div>
+					{#if show_profile_types}
+						<div
+							class="absolute center-0 z-10 w-20 origin-top-right rounded-md bg-slate-700"
+							transition:slide
+						>
+							<div class="py-1">
+								<a class="block py-2 hover:bg-slate-500" href="/admin/profiles/student"
+									>  Schüler</a
+								>
+								<a class="block py-2 hover:bg-slate-500" href="/admin/profiles/teacher"
+									>  Lehrer</a
+								>
+							</div>
+						</div>
+					{/if}
+				</div>
 				<a
 					class="m-1 hover:text-sky-500 hover:underline sm:p-2"
-					href="/admin/profiles"
-					transition:slide>Steckbrieffelder</a
-				>
-				<a
-					class="m-1 hover:text-sky-500 hover:underline sm:p-2"
-					href="/admin/policy"
-					transition:slide>Richtlinien</a
+					href="/admin/policy"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Richtlinien</span></a
 				>
 				<div
 					on:click={() => {
@@ -113,45 +145,82 @@
 					on:keydown={() => {
 						[];
 					}}
-					class="relative m-1 inline-block cursor-pointer text-left sm:p-2"
-					transition:slide
-				>
+					class="relative m-1 inline-block cursor-pointer text-left sm:p-2">
 					<div class="flex hover:text-sky-500 hover:underline">
-						<p>Ergebnisse</p>
-						<svg
-							class="h-5 w-5"
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-								clip-rule="evenodd"
-							/>
-						</svg>
+						<p><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Ergebnisse</span></p>
+						<span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>
+							<svg
+								class="h-5 w-5"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
 					</div>
 					{#if show_result_types}
 						<div
-							class="absolute right-5 z-10 w-56 origin-top-right rounded-md bg-slate-700"
+							class="absolute center-0 z-10 w-20 origin-top-right rounded-md bg-slate-700"
+							transition:slide
+						>
+							<center>
+								<div class="py-1">
+									<a class="block py-2 hover:bg-slate-500" href="/admin/evaluate/student">Schüler</a>
+									<a class="block py-2 hover:bg-slate-500" href="/admin/evaluate/teacher">Lehrer</a>
+								</div>
+							</center>
+						</div>
+					{/if}
+				</div>
+				<div
+					on:click={() => {
+						show_profileresult_types = !show_profileresult_types;
+					}}
+					on:keydown={() => {
+						[];
+					}}
+					class="relative m-1 inline-block cursor-pointer text-center sm:p-2">
+					<div class="flex hover:text-sky-500 hover:underline">
+						<p><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Steckbriefergebnisse</span></p>
+						<span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>
+							<svg
+								class="h-5 w-5"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
+					</div>
+					{#if show_profileresult_types}
+						<div
+							class="absolute center-0 z-10 w-20 origin-top-right rounded-md bg-slate-700"
 							transition:slide
 						>
 							<div class="py-1">
-								<a class="block py-2 hover:bg-slate-500" href="/admin/evaluate/student">Schüler</a>
-								<a class="block py-2 hover:bg-slate-500" href="/admin/evaluate/teacher">Lehrer</a>
+								<a class="block py-2 hover:bg-slate-500" href="/admin/profileresults/student"
+									>  Schüler</a
+								>
+								<a class="block py-2 hover:bg-slate-500" href="/admin/profileresults/teacher"
+									>  Lehrer</a
+								>
 							</div>
 						</div>
 					{/if}
 				</div>
 				<a
 					class="m-1 hover:text-sky-500 hover:underline sm:p-2"
-					href="/admin/profileresults"
-					transition:slide>Steckbriefergebnisse</a
-				>
-				<a
-					class="m-1 hover:text-sky-500 hover:underline sm:p-2"
-					href="/admin/quotes"
-					transition:slide>Zitate</a
+					href="/admin/quotes"><span style="display: inline-block" in:fly={{ x: -50 }} out:fly={{ x: -50 }}>Zitate</span></a
 				>
 			</div>
 		{/if}

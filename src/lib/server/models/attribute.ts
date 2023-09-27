@@ -15,6 +15,7 @@ export class Attribute extends Model<
 > {
 	declare id: CreationOptional<number>;
 	declare userId: ForeignKey<User["id"]>;
+	declare editId: ForeignKey<User["id"]>;
 	declare profileFieldId: ForeignKey<ProfileField["id"]>;
 	declare answer: string;
 	declare createdAt: CreationOptional<Date>;

@@ -17,8 +17,8 @@ export class PairAnswer extends Model<
 	declare id: CreationOptional<number>;
 	declare userId: ForeignKey<User["id"]>;
 	declare questionId: ForeignKey<Question["id"]>;
-	declare answerOneId: ForeignKey<AnswerPossibility["id"]>;
-	declare answerTwoId: ForeignKey<AnswerPossibility["id"]>;
+	declare answerOneId: ForeignKey<User["id"]>;
+	declare answerTwoId: ForeignKey<User["id"]>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
 }

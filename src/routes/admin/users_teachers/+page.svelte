@@ -33,7 +33,6 @@
 			mail: new_user_email,
 			gender: new_user_gender,
 			code: "---",
-			isTeacher: false,
 		});
 		users = [...users].sort((a, b) => {
 			return a.surname.localeCompare(b.surname);
@@ -57,7 +56,7 @@
 </script>
 
 <div class="m-5">
-	<h1 class="text-5xl dark:text-white">User-Manager | Schüler</h1>
+	<h1 class="text-5xl dark:text-white">User-Manager | Lehrer</h1>
 	<h2 class="mt-8 mb-3 text-2xl dark:text-white">User hinzufügen</h2>
 	<!--<form method="POST" action="?/generate">
 		<button class="mt-8 w-full rounded-xl bg-slate-500 p-4 text-lg text-white"
@@ -87,6 +86,17 @@
 				/>
 			</div>
 			<div class="col-span-2 place-self-center">
+				<label class="mr-3" for={new_user_gender}>Geschlecht</label>
+				<select
+					bind:value={new_user_gender}
+					class="w-36 rounded-xl bg-white p-3 text-slate-900"
+					name="gender"
+					required
+				>
+					<option value="m"> Männlich </option>
+					<option value="w"> Weiblich </option>
+					<option value="d"> Divers </option>
+				</select>
 			</div>
 			<div class="col-span-2">
 				<input
@@ -144,6 +154,7 @@
 							class="w-36 rounded-xl bg-white p-3 text-slate-900"
 							id={`gender-${i}`}
 							name="gender"
+							required
 						>
 							<option value="m"> Männlich </option>
 							<option value="w"> Weiblich </option>

@@ -2,6 +2,7 @@
 	interface Answer {
 		possibility: string;
 		count: number;
+		gender: string;
 	}
 
 	import { LayerCake, Html } from "layercake";
@@ -10,29 +11,57 @@
 
 	export let answers: Array<Answer> = [];
 	export let question = "";
+	export let gender = "N"
 </script>
-
-<fieldset class="rounded-xl border-4 border-solid border-slate-900 bg-slate-500 dark:bg-sky-700">
-	<legend
-		class="mx-5 w-72 rounded-xl border-2 border-solid border-slate-900 bg-white p-2 text-left text-slate-900 md:w-96"
-		>{question}</legend
-	>
-	<div class="chart-container">
-		<LayerCake padding={{ top: 10, right: 10, bottom: 10, left: 10 }} data={answers}>
-			<Html>
-				<CirclePack
-					idKey={"possibility"}
-					valueKey={"count"}
-					fill="#0ea5e9"
-					stroke="#000000"
-					textColor="#61004e"
-					strokeWidth={1}
-					spacing={3}
-				/>
-			</Html>
-		</LayerCake>
-	</div>
-</fieldset>
+	{#if gender == "N"}
+		<div class="chart-container">
+			<LayerCake padding={{ top: 10, right: 10, bottom: 10, left: 10 }} data={answers}>
+				<Html>
+					<CirclePack
+							idKey={"possibility"}
+							valueKey={"count"}
+							fill= "#0ea5e9"
+							stroke="#000000"
+							textColor="#61004e"
+							strokeWidth={1}
+							spacing={3}
+					/>
+				</Html>
+			</LayerCake>
+		</div>
+	{:else if gender == "M"}
+		<div class="chart-container">
+			<LayerCake padding={{ top: 10, right: 10, bottom: 10, left: 10 }} data={answers}>
+				<Html>
+					<CirclePack
+							idKey={"possibility"}
+							valueKey={"count"}
+							fill= "#0ea5e9"
+							stroke="#000000"
+							textColor="#61004e"
+							strokeWidth={1}
+							spacing={3}
+					/>
+				</Html>
+			</LayerCake>
+		</div>
+	{:else if gender == "F"}
+		<div class="chart-container">
+			<LayerCake padding={{ top: 10, right: 10, bottom: 10, left: 10 }} data={answers}>
+				<Html>
+					<CirclePack
+							idKey={"possibility"}
+							valueKey={"count"}
+							fill= "#58C3F4"
+							stroke="#000000"
+							textColor="#61004e"
+							strokeWidth={1}
+							spacing={3}
+					/>
+				</Html>
+			</LayerCake>
+		</div>
+	{/if}
 
 <style>
 	/*

@@ -27,7 +27,7 @@ export const actions: Actions = {
 		email = email.toString().toLowerCase();
 
 		const user = await User.findOne({
-			attributes: ["mail", "id", "code"],
+			attributes: ["mail", "gender", "id", "code", "isTeacher"],
 			where: { mail: email },
 		});
 
@@ -47,6 +47,16 @@ export const actions: Actions = {
 			maxAge: 60 * 60 * 24,
 		});
 
-		throw redirect(302, "/");
+		if (user.gender === null) {
+			throw redirect(302, "/register");
+		} else {
+			if (user.isTeacher) {
+				throw redirect(302, "/teacher/quotes");
+			} else {
+				throw redirect(302, "/");
+            }
+			
+        }
+		
 	},
 };

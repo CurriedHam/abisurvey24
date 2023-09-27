@@ -21,8 +21,8 @@ interface inUser {
 	id?: number;
 	mail?: string;
 	gender?: "m" | "w" | "d";
-	code: string;
 	isTeacher?: boolean;
+	code: string;
 	personId?: number;
 }
 
@@ -35,8 +35,8 @@ export const load: PageServerLoad = async ({ url }) => {
 	const data = (
 		await User.findAll({
 			include: Person,
-			attributes: ["id", "mail", "gender", "code", "personId", "Person.forename", "Person.surname", "isTeacher"],
-			where: { isTeacher: false }
+			attributes: ["id", "mail", "gender", "code", "personId", "Person.forename", "Person.surname"],
+			where: { isTeacher: true }
 		})
 	).map((value) => {
 		return value.dataValues;
@@ -50,7 +50,6 @@ export const load: PageServerLoad = async ({ url }) => {
 				gender: row.gender,
 				code: row.code,
 				personId: row.personId,
-				isTeacher: row.isTeacher,
 				// @ts-ignore
 				forename: row.Person.forename,
 				// @ts-ignore
@@ -68,7 +67,7 @@ export const actions: Actions = {
 			await User.findAll({
 				include: Person,
 				attributes: ["id", "mail", "gender", "code", "personId", "Person.forename", "Person.surname", "isTeacher"],
-				where: {isTeacher: false}
+				where: { isTeacher: true }
 			})
 		).map((user) => {
 			return user.dataValues;
@@ -83,7 +82,6 @@ export const actions: Actions = {
 			code: "",
 			mail: "",
 			gender: "m",
-			isTeacher: false
 		};
 
 		let current_person: inPerson = {
@@ -106,7 +104,7 @@ export const actions: Actions = {
 				current_user.personId = person.id;
 
 				if (current_user.id === undefined) {
-					current_user.isTeacher = false;
+					current_user.isTeacher = true;
 					await User.create(current_user);
 				} else {
 					await User.update(current_user, {
@@ -130,7 +128,6 @@ export const actions: Actions = {
 					id: undefined,
 					code: "",
 				};
-
 
 				current_person = {
 					id: undefined,
@@ -159,8 +156,6 @@ export const actions: Actions = {
 				current_user.isTeacher = value.toString() === "true";
             }
 		}
-
-		
 
 		await processEntry();
 

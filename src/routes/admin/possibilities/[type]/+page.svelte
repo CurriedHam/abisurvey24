@@ -53,7 +53,12 @@
 		{/if}
 	</h1>
 	<h2 class="mt-8 mb-3 text-2xl dark:text-white">Möglichkeit hinzufügen</h2>
-	<form on:submit|preventDefault={add_possibility}>
+	<form method="POST" action="?/generate">
+		<button class="mt-8 w-full rounded-xl bg-slate-500 p-4 text-lg text-white"
+			>Antwortmöglichkeiten aus den Usern generieren</button
+		>
+	</form>
+	<!--<form on:submit|preventDefault={add_possibility}>
 		<div
 			class="grid grid-cols-2 grid-rows-3 place-items-stretch gap-3 rounded-xl bg-slate-500 p-5 text-white sm:grid-cols-5 sm:grid-rows-1"
 		>
@@ -81,7 +86,7 @@
 				/>
 			</div>
 		</div>
-	</form>
+	</form>-->
 	<h2 class="mt-8 mb-3 text-2xl dark:text-white">Aktuelle Möglichkeiten</h2>
 	<form class="my-5" method="POST">
 		{#if possibilities.length > 0}

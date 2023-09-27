@@ -12,6 +12,7 @@
 					id: question.id,
 					question: question.question,
 					teacherQuestion: question.teacherQuestion,
+					genderedQuestion: question.genderedQuestion,
 					pair: question.pair,
 				};
 			})
@@ -22,18 +23,20 @@
 
 	let new_question_question = "";
 	let new_question_teacherQuestion = false;
+	let new_question_genderedQuestion = false;
 	let new_question_pair = false;
 
 	$: new_question = {
 		question: new_question_question,
 		teacherQuestion: new_question_teacherQuestion,
+		genderedQuestion: new_question_genderedQuestion,
 		pair: new_question_pair,
 	};
 
 	function add_question() {
 		questions.push(new_question);
 		new_question_question = "";
-		new_question_teacherQuestion = new_question_pair = false;
+		new_question_teacherQuestion = new_question_genderedQuestion = new_question_pair = false;
 		questions = [...questions].sort((a) => {
 			return a.teacherQuestion;
 		});
@@ -56,7 +59,7 @@
 	<h2 class="mt-8 mb-3 text-2xl dark:text-white">Fragen hinzufügen</h2>
 	<form on:submit|preventDefault={add_question}>
 		<div
-			class="grid grid-cols-2 grid-rows-3 place-items-stretch rounded-xl bg-slate-500 p-5 text-white sm:grid-cols-5 sm:grid-rows-1"
+			class="grid grid-cols-2 grid-rows-3 place-items-stretch rounded-xl bg-slate-500 p-5 text-white sm:grid-cols-6 sm:grid-rows-1"
 		>
 			<div class="col-span-2">
 				<input
@@ -71,6 +74,14 @@
 					bind:checked={new_question_pair}
 					class="scale-150"
 					id="pair"
+					type="checkbox"
+				/>
+			</div>
+			<div class="place-self-center p-3">
+				<label class="mr-2" for="genderedquestion">Geteilte-Frage</label><input
+					bind:checked={new_question_genderedQuestion}
+					class="scale-150"
+					id="genderedquestion"
 					type="checkbox"
 				/>
 			</div>
@@ -96,7 +107,7 @@
 		{#if questions.length > 0}
 			{#each questions as question, i}
 				<div
-					class="my-2 grid grid-cols-2 grid-rows-3 place-items-stretch rounded-xl bg-slate-500 p-5 text-white sm:grid-cols-5 sm:grid-rows-1"
+					class="my-2 grid grid-cols-2 grid-rows-3 place-items-stretch rounded-xl bg-slate-500 p-5 text-white sm:grid-cols-6 sm:grid-rows-1"
 				>
 					<div class="col-span-2">
 						<input
@@ -122,6 +133,20 @@
 							id={`pair-${i}`}
 							type="checkbox"
 							name="pair"
+						/>
+					</div>
+					<div class="place-self-center p-3">
+						<label class="mr-2" for={`genderedquestion-${i}`}>Geteilte-Frage</label>
+						<input
+							on:input|preventDefault={() => {
+								question.genderedQuestion = !question.genderedQuestion;
+							}}
+							checked={question.genderedQuestion}
+							value={question.genderedQuestion}
+							class="scale-150"
+							id={`genderedquestion-${i}`}
+							type="checkbox"
+							name="genderedQuestion"
 						/>
 					</div>
 					<div class="place-self-center p-3">

@@ -20,6 +20,9 @@ const config = {
 		crawl: false,
 		entries: [],
 	},
+	ssr: {
+		external: ['whatwg-url']
+	}
 };
 
 export default config;

@@ -13,6 +13,7 @@ import type { Person } from "./person";
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 	declare id: CreationOptional<number>;
 	declare gender?: gender;
+	declare isTeacher?: boolean;
 	declare mail?: string;
 	declare code: string;
 	declare personId: ForeignKey<Person["id"]>;
@@ -36,6 +37,7 @@ User.init(
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
+		isTeacher: DataTypes.BOOLEAN,
 		code: DataTypes.STRING,
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,
