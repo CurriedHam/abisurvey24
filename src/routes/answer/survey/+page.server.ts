@@ -77,8 +77,10 @@ export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const data = await request.formData();
 
+
 		let current_question: number | undefined;
 		let current_answer: number | undefined;
+
 		let current_possibility: number | undefined;
 		let current_possibility_two: number | undefined;
 
@@ -96,11 +98,25 @@ export const actions: Actions = {
 						answerPossibilityId: current_possibility,
 						userId: locals.userId,
 					});
-				} else {
-					await Answer.update(
-						{ answerPossibilityId: current_possibility },
-						{ where: { id: current_answer, userId: locals.userId } },
-					);
+				}
+
+				if (question !== null && !question.pair) {
+					const current_answer = await Answer.findOne({
+						where: { questionId: current_question, userId: locals.userId },
+					});
+
+					if (current_answer === null) {
+						await Answer.create({
+							questionId: current_question,
+							answerPossibilityId: current_possibility,
+							userId: locals.userId,
+						});
+					} else {
+						await Answer.update(
+							{ answerPossibilityId: current_possibility },
+							{ where: { id: current_answer.id, userId: locals.userId } },
+						);
+					}
 				}
 			} else if (question !== null && !question.genderedQuestion) {
 				const order = compare_nums(current_possibility, current_possibility_two)
@@ -113,7 +129,11 @@ export const actions: Actions = {
 						answerTwoId: current_possibility,
 					};
 
-				if (current_answer === undefined) {
+				const current_answer = await PairAnswer.findOne({
+					where: { questionId: current_question, userId: locals.userId },
+				});
+
+				if (current_answer === null) {
 					if (current_possibility === current_possibility_two) {
 						return;
 					}
@@ -129,7 +149,7 @@ export const actions: Actions = {
 					);
 				} else {
 					await PairAnswer.update(order, {
-						where: { id: current_answer, userId: locals.userId },
+						where: { id: current_answer.id, userId: locals.userId },
 					});
 				}
 			} else {
@@ -174,7 +194,9 @@ export const actions: Actions = {
 				current_possibility_two = undefined;
 			} else if (key === "answerId") {
 				current_answer = parseInt(value.toString());
+			
 			} else if (key === "answerPossibilityId" || key === "answerOneId" || key === "answerMaleId") {
+
 				current_possibility = parseInt(value.toString());
 			} else if (key === "answerTwoId" || key === "answerFemaleId") {
 				current_possibility_two = parseInt(value.toString());
