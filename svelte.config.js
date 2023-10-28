@@ -15,6 +15,10 @@ const config = {
 		adapter: adapter({
 			envPrefix: "APP_",
 		}),
+		//not a good way to handle the issue of cross site POST forms
+		csrf: {
+			checkOrigin: false,
+		}
 	},
 	prerender: {
 		crawl: false,

@@ -39,8 +39,8 @@
 </script>
 
 <div class="mx-2 lg:mx-8 xs:m-0">
-	<h1 class="my-5 text-5xl dark:text-white">Zitate</h1>
-	<h2 class="mt-8 mb-3 text-2xl dark:text-white">Eingereichte Zitate</h2>
+	<h1 class="my-5 text-5xl dark:text-white">Eingereichte Zitate</h1>
+	<p class="mt-8 mb-3 text-2xl dark:text-white">Hier finden Sie die Zitate, die Schüler Ihnen zugeordnet haben. Wenn Sie ein Zitat nicht als wahrheitsgemäß erachten, können Sie sich an diese <a class="mt-8 mb-3 text-2xl dark:text-white hover:underline" href="mailto: abizeitung2024@stiftisches.de">E-Mail Adresse</a> wenden und wir kümmern uns darum den Fall richtigzustellen.</p>
 	{#if quotes.length > 0}
 		<form class="mt-5" method="POST" action="?/users">
 			{#each quotes as quote}
@@ -81,23 +81,10 @@
 									Eingereicht von <span class="text-lg text-teal-400">{quote.user}</span>
 								</h2>
 							</div>
-							<div class="my-2 grid grid-cols-3 grid-rows-1 justify-items-center">
-								<div></div>
-								<button
-								class="w-full cursor-pointer rounded-xl bg-white p-3 hover:bg-sky-600 dark:hover:bg-slate-500"
-								on:click|preventDefault={() => quote.allowed = true}>Bestätigen</button
-								>
-								<div></div>
-							</div>
 						</div>
 					</fieldset>
 				{/if}
 			{/each}
-			<input
-				class="mt-8 w-full rounded-xl bg-slate-500 p-4 text-lg text-white hover:cursor-pointer"
-				type="submit"
-				value="Zitate aktualisieren"
-			/>
 		</form>
 	{:else}
 		<h1 class="m-8 text-center text-white">Es sind noch keine Fragen vorhanden.</h1>
