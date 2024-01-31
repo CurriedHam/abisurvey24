@@ -124,7 +124,7 @@ export const actions: Actions = {
 
 				in_quotes.push(current_quote.id);
 			} else {
-				quote = await Quote.create({ course: current_quote.course, userId: locals.userId });
+				quote = await Quote.create({ course: current_quote.course, allowed: false, userId: locals.userId });
 			}
 
 			const creatable_parts: Array<inQuotePart> = [];
