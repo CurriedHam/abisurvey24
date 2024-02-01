@@ -62,8 +62,8 @@ Quote.belongsTo(User, { foreignKey: "userId" });
 Quote.hasMany(QuotePart, { foreignKey: "quoteId" });
 QuotePart.belongsTo(Quote, { foreignKey: "quoteId" });
 
-AnswerPossibility.hasMany(QuotePart, { foreignKey: "answerPossibilityId" });
-QuotePart.belongsTo(AnswerPossibility, { foreignKey: "answerPossibilityId" });
+User.hasMany(QuotePart, { foreignKey: "answerPossibilityId" });
+QuotePart.belongsTo(User, { foreignKey: "answerPossibilityId" });
 
 export class X {
 	log() {
