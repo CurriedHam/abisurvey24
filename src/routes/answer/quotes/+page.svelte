@@ -359,5 +359,17 @@
 		</form>
 	{:else}
 		<h1 class="m-8 text-center dark:text-white">Du hast noch keine Zitate eingereicht!</h1>
+		<form
+			method="POST"
+			on:submit={() => {
+				actionCall.set(true);
+			}}
+		>
+		<input
+				class="mt-8 w-full cursor-pointer rounded-xl bg-slate-500 p-4 text-lg text-white hover:bg-sky-700 hover:bg-sky-600 dark:bg-sky-700 dark:hover:bg-slate-500"
+				type="submit"
+				value="Absenden"
+			/>
+		</form>
 	{/if}
 </div>
