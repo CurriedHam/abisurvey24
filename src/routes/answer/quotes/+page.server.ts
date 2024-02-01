@@ -168,9 +168,12 @@ export const actions: Actions = {
 			current_quote_parts = [];
 		}
 
+		let quote_exists: boolean = false;
+
 		for (const pair of data.entries()) {
 			const key = pair[0];
 			const value = pair[1];
+			quote_exists = true;
 
 			evaluate: {
 				switch (key) {
@@ -223,7 +226,7 @@ export const actions: Actions = {
 			current_quote_parts.push(current_part);
 		}
 
-		await processQuote();
+		if(quote_exists) await processQuote();
 
 		for (const quoteId of quote_ids) {
 			if (!in_quotes.includes(quoteId)) {
