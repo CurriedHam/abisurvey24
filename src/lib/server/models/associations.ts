@@ -1,4 +1,4 @@
-import { AnswerPossibility } from "./answerpossibility";
+
 import { Answer } from "./answer";
 import { PairAnswer } from "./pairanswer";
 import { GenderedAnswers } from "./genderedanswers";
@@ -14,17 +14,14 @@ import { QuotePart } from "./quotepart";
 Person.hasOne(User, { foreignKey: "personId" });
 User.belongsTo(Person, { foreignKey: "personId" });
 
-Person.hasOne(AnswerPossibility, { foreignKey: "personId" });
-AnswerPossibility.belongsTo(Person, { foreignKey: "personId" });
+User.hasMany(Answer, { foreignKey: "answerPossibilityId" });
+Answer.belongsTo(User, { foreignKey: "answerPossibilityId" });
 
-AnswerPossibility.hasMany(Answer, { foreignKey: "answerPossibilityId" });
-Answer.belongsTo(AnswerPossibility, { foreignKey: "answerPossibilityId" });
+User.hasMany(PairAnswer, { foreignKey: "answerOneId", as: "answerOneMany" });
+PairAnswer.belongsTo(User, { foreignKey: "answerOneId", as: "answerOneOne" });
 
-AnswerPossibility.hasMany(PairAnswer, { foreignKey: "answerOneId", as: "answerOneMany" });
-PairAnswer.belongsTo(AnswerPossibility, { foreignKey: "answerOneId", as: "answerOneOne" });
-
-AnswerPossibility.hasMany(PairAnswer, { foreignKey: "answerTwoId", as: "answerTwoMany" });
-PairAnswer.belongsTo(AnswerPossibility, { foreignKey: "answerTwoId", as: "answerTwoOne" });
+User.hasMany(PairAnswer, { foreignKey: "answerTwoId", as: "answerTwoMany" });
+PairAnswer.belongsTo(User, { foreignKey: "answerTwoId", as: "answerTwoOne" });
 
 Question.hasOne(Answer, { foreignKey: "questionId" });
 Answer.belongsTo(Question, { foreignKey: "questionId" });
