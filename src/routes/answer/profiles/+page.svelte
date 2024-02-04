@@ -260,7 +260,7 @@
 							}}
 							type="text"
 							class="mx-auto rounded-lg border-solid p-2 text-start"
-							placeholder="Deine Antwort.."
+							placeholder="Wähle einen Freund aus"
 							value={getPersonName(getAttributeEditor(id))}
 							/>
 							
@@ -326,7 +326,7 @@
 								name="answer"
 								rows={calculate_rows(attribute.answer)}
 								value={attribute.answer}
-								maxlength="500"
+								maxlength="1800"
 							/>
 
 							<input hidden name="friendAttributeId" value={attribute.id} />
