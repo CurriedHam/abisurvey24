@@ -6,6 +6,7 @@ import { AnswerPossibility } from "$lib/server/models/answerpossibility";
 import { Person } from "$lib/server/models/person";
 import { Answer } from "$lib/server/models/answer";
 import { PairAnswer } from "$lib/server/models/pairanswer";
+import { GenderedAnswers } from "$lib/server/models/genderedanswers";
 import { Quote } from "$lib/server/models/quote";
 import { QuotePart } from "$lib/server/models/quotepart";
 
@@ -168,6 +169,7 @@ export const actions: Actions = {
 			if (!processed.includes(id)) {
 				await Answer.destroy({ where: { userId: id } });
 				await PairAnswer.destroy({ where: { userId: id } });
+				await GenderedAnswers.destroy({ where: { userId: id } });
 
 				const belongingQuotes = (
 					await Quote.findAll({ where: { userId: id }, attributes: ["id"] })
