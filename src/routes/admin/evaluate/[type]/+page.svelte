@@ -220,7 +220,7 @@
 			downloadText(
 				JSON.stringify(
 					ls_results.map((pair) => {
-						return { answers: pair.results, question: pair.question };
+						return { answers: pair.results, answersM: pair.resultsM, answersF: pair.resultsF question: pair.question };
 					}),
 				),
 				`results_${type}.json`,
