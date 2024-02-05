@@ -156,8 +156,6 @@
 
 	let searchResults: Array<Possibility> = [];
 
-	let isClicked = 0;
-
 	function search(term: string, teacher: boolean, questionId: number, gender: string) {
 
 		if(gender == "n"){
@@ -461,7 +459,8 @@
 		{/if}
 		<input
 			class="mt-8 w-full cursor-pointer rounded-xl bg-slate-500 p-4 text-lg text-white hover:bg-sky-700 dark:bg-sky-700 dark:hover:bg-slate-500"
-			on:click={() => {isClicked = isClicked + 1;}} type="submit" disabled={isClicked > 1} value="Absenden"
+			type="submit"
+			value="Absenden"
 		/>
 	</form>
 </div>
